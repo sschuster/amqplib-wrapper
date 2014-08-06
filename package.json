@@ -1,0 +1,24 @@
+{
+    "name": "amqplib-wrapper",
+    "version": "1.0.0",
+    "description": "Wrapper that manages queues/exchanges and subscriptions based on amqplib.",
+    "engines": {
+        "node": "0.10"
+    },
+    "main": "lib/amqp-wrapper.js",
+    "author": {
+        "name": "Stefan Schuster",
+        "email": "contact@stefanschuster.at"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "amqplib": "0.2.0",
+        "when": "~2.1"
+    },
+    "devDependencies": {
+        "coffee-script": "~1.7.1"
+    },
+    "scripts": {
+        "prepublish": "coffee -o lib/ -c src/"
+    }
+}
