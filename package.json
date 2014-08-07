@@ -1,6 +1,6 @@
 {
     "name": "amqplib-wrapper",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Wrapper that manages queues/exchanges and subscriptions based on amqplib.",
     "engines": {
         "node": "0.10"
