@@ -21,7 +21,11 @@ class Subscription
         @channelPromise = @client.createChannel()
         @channelPromise.then((channel) =>
             if "prefetch" of @options
-                channel.prefetch(5)
+                channel.prefetch(@options["prefetch"])
+
+            channel.on("error", (err) ->
+                #Todo: Reopen channel on error
+            )
         )
 
     disconnect: ->
@@ -58,7 +62,11 @@ class Message
         @rawMessage = rawMessage
 
     ack: ->
-        @channel.ack(@rawMessage)
+        try
+            @channel.ack(@rawMessage)
+            return true
+        catch error
+            return false
 
     asString: ->
         return @rawMessage.content.toString()

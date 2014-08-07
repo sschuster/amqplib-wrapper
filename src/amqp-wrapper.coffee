@@ -7,6 +7,7 @@ module.exports.reconnectTimeout = 1000
 
 module.exports.AmqpWrapper = class AmqpWrapper
     constructor: (config) ->
+        @ready = false
         @readyPromise = null
         @clientPromise = null
         @sharedChannelPromise = null
@@ -53,6 +54,7 @@ module.exports.AmqpWrapper = class AmqpWrapper
                             for queueName, subscription of @subscriptions
                                 subscription.setClient(client)
                             resolve(channel);
+                            @ready = true
                         ).otherwise((err) =>
                             setTimeout(=>
                                 @disconnect()
@@ -90,6 +92,7 @@ module.exports.AmqpWrapper = class AmqpWrapper
                 )
             )
             @clientPromise = null
+            @ready = false
 
     shutdown: ->
         @updateConfig = ->
@@ -142,7 +145,7 @@ module.exports.AmqpWrapper = class AmqpWrapper
     subscribeQueue: (queueName, options, subscriberCb) ->
         if queueName not of @subscriptions
             @subscriptions[queueName] = new QueueSubscription(queueName, options)
-            if @clientPromise
+            if @ready and @clientPromise
                 @clientPromise.then((client) =>
                     @subscriptions[queueName].setClient(client)
                 )
@@ -151,7 +154,7 @@ module.exports.AmqpWrapper = class AmqpWrapper
     subscribeExchange: (queueName, exchangeName, routingKey, options, subscriberCb) ->
         if queueName not of @subscriptions
             @subscriptions[queueName] = new ExchangeSubscription(queueName, exchangeName, routingKey, options)
-            if @clientPromise
+            if @ready and @clientPromise
                 @clientPromise.then((client) =>
                     @subscriptions[queueName].setClient(client)
                 )
